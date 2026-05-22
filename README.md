@@ -1,33 +1,33 @@
 # Sakshi Kejriwal — Portfolio
 
-A personal portfolio for **Sakshi Kejriwal**, a digital marketing strategist and creative.
-It showcases her professional work, in-depth case studies, and creative projects in one
-polished, interactive site.
+This is my personal portfolio. I'm **Sakshi Kejriwal**, a digital marketing strategist and
+creative, and this site brings my professional work, in-depth case studies, and creative
+projects together in one polished, interactive place.
 
 > Built once, runs everywhere — it works in a web browser today, and the same code can
-> become an iPhone or Android app later if ever needed.
+> become an iPhone or Android app later if I ever need it to.
 
 ---
 
 ## 📖 What is this?
 
-This repository holds the complete source code for Sakshi's portfolio website — think of it
-as the **blueprint** a builder uses: all the instructions a computer needs to assemble the
-finished site.
+This repository holds the complete source code for my portfolio website — think of it as the
+**blueprint** a builder uses: all the instructions a computer needs to assemble the finished
+site.
 
-The portfolio has two kinds of pages:
+My portfolio has two kinds of pages:
 
-- **Landing page** — the main page visitors see first. It introduces Sakshi, lists her
-  services, highlights her best work, and shows how to get in touch.
-- **Case study pages** — one per project, each telling the full story of a specific piece
-  of work in detail.
+- **Landing page** — the main page visitors see first. It introduces me, lists my services,
+  highlights my best work, and shows how to get in touch.
+- **Case study pages** — one per project, each telling the full story of a specific piece of
+  work in detail.
 
 ### The pages at a glance
 
 ```mermaid
 flowchart TD
     Home["🏠 Landing Page"]
-    Home --> About["About Sakshi"]
+    Home --> About["About Me"]
     Home --> Services["Services"]
     Home --> Work["Selected Work"]
     Home --> Contact["Contact"]
@@ -41,9 +41,9 @@ flowchart TD
 
 ## 🧩 How it's put together (in plain English)
 
-The project keeps **the words and pictures separate from the design and layout**. This is a
-deliberate choice — it means the content can be updated later (even through an easy-to-use
-online editor) without anyone having to touch the design code.
+I built the project so that **the words and pictures stay separate from the design and
+layout**. That was a deliberate choice — it means I can update the content later (even
+through an easy-to-use online editor) without anyone having to touch the design code.
 
 ```mermaid
 flowchart LR
@@ -52,15 +52,16 @@ flowchart LR
     Design --> Site["💻 Finished Website"]
 ```
 
-Today the content lives in files inside the project. Later it can be swapped for an online
-editor (a "CMS" — content management system), and because of this separation **none of the
-design code has to change**.
+Right now the content lives in files inside the project. Later it can be swapped for an
+online editor (a "CMS" — content management system), and because of this separation **none
+of the design code has to change**.
 
 ---
 
 ## 🛠️ What it's built with
 
-You don't need to know these to use the site — they're listed for developers and curious readers.
+You don't need to know any of this to use the site — I've listed it for developers and
+curious readers.
 
 | Tool | What it does, in simple terms |
 | --- | --- |
@@ -79,7 +80,7 @@ A quick map of the main folders, so you know where things live:
 | --- | --- |
 | `app/` | The actual pages of the site. |
 | `src/components/` | Reusable building blocks (buttons, cards, the navigation bar…). |
-| `src/data/` | All the content — the text, project details, and the "content library". |
+| `src/data/` | All the content — my text, project details, and the "content library". |
 | `src/theme/` | The design system — colours, fonts, and spacing rules. |
 | `assets/images/` | Photos, logos, and videos used across the site. |
 
@@ -113,5 +114,5 @@ npx expo export --platform web
 
 ## 🌐 Status
 
-The site is content-complete and ready to be published online (e.g. on Vercel). A future
-step is connecting an online content editor so the portfolio can be updated without code.
+The site is content-complete and ready to be published online (e.g. on Vercel). My next step
+is connecting an online content editor so I can update the portfolio without touching code.
