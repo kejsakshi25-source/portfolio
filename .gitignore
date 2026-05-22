@@ -42,8 +42,9 @@ app-example
 /ios
 /android
 
-# local Claude settings
-.claude/settings.local.json
+# editor & tooling settings (kept locally, not part of the app)
+.claude/
+.vscode/
 
 # design reference material (kept locally, not part of the app)
 HTML_REFERENCE/
