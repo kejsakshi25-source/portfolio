@@ -97,6 +97,7 @@ export function RemoteImage({
       style={style}
       contentFit={contentFit}
       alt={media.alt}
+      cachePolicy="memory-disk"
       onLoadStart={onLoadStart}
       onLoad={onLoad}
     />

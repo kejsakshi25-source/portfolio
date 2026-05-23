@@ -24,7 +24,7 @@ export const RevealScrollView = forwardRef<
       ref={ref as never}
       {...props}
       onScroll={handler}
-      scrollEventThrottle={16}>
+      scrollEventThrottle={32}>
       {children}
     </Animated.ScrollView>
   );

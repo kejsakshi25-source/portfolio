@@ -1,4 +1,4 @@
-import { type ReactNode } from 'react';
+import React, { type ReactNode } from 'react';
 import { Linking, Text, View } from 'react-native';
 
 import { DashedBorder } from '@/src/components/decor/DashedBorder';
@@ -26,7 +26,7 @@ function LinkLabel({ text, color }: { text: string; color: string }) {
 }
 
 /* ── LinkedIn post card ── */
-function LinkedInCard({ card }: { card: CaseCard }) {
+const LinkedInCard = React.memo(function LinkedInCard({ card }: { card: CaseCard }) {
   const t = useTheme();
   return (
     <View
@@ -74,10 +74,10 @@ function LinkedInCard({ card }: { card: CaseCard }) {
       </View>
     </View>
   );
-}
+});
 
 /* ── Email sample card ── */
-function SampleCard({ card }: { card: CaseCard }) {
+const SampleCard = React.memo(function SampleCard({ card }: { card: CaseCard }) {
   const t = useTheme();
   return (
     <View
@@ -87,7 +87,7 @@ function SampleCard({ card }: { card: CaseCard }) {
         borderColor: t.colors.ink,
         borderRadius: t.radii.lg,
         backgroundColor: t.colors.cream,
-        padding: 28,
+        padding: 36,
         gap: 8,
       }}>
       <View
@@ -109,31 +109,18 @@ function SampleCard({ card }: { card: CaseCard }) {
           {card.category}
         </Text>
       </View>
-      <Text style={{ fontFamily: t.fonts.sans.extrabold, fontSize: 18, color: t.colors.ink }}>
+      <Text style={{ fontFamily: t.fonts.sans.extrabold, fontSize: 22, color: t.colors.ink }}>
         {card.title}
       </Text>
-      <Text style={{ fontFamily: t.fonts.sans.regular, fontSize: 13.5, lineHeight: 21, color: t.colors.ink }}>
+      <Text style={{ fontFamily: t.fonts.sans.regular, fontSize: 16, lineHeight: 28, color: t.colors.ink }}>
         {card.body}
-      </Text>
-      <Text style={{ fontFamily: t.fonts.display, fontSize: 32, color: t.colors.brick, marginTop: 8 }}>
-        {card.meta}
-      </Text>
-      <Text
-        style={{
-          fontFamily: t.fonts.mono,
-          fontSize: 9,
-          letterSpacing: 1,
-          textTransform: 'uppercase',
-          color: t.colors.rust,
-        }}>
-        {card.metaLabel}
       </Text>
     </View>
   );
-}
+});
 
 /* ── Writing card (blog / case study) ── */
-function WriteCard({ card }: { card: CaseCard }) {
+const WriteCard = React.memo(function WriteCard({ card }: { card: CaseCard }) {
   const t = useTheme();
   const isCase = card.kind === 'case-study';
   const bg = isCase ? t.colors.ink : t.colors.cream;
@@ -186,14 +173,14 @@ function WriteCard({ card }: { card: CaseCard }) {
           </Text>
         </View>
       )}
-      <Text style={{ fontFamily: t.fonts.sans.extrabold, fontSize: 17, color: fg }}>
+      <Text style={{ fontFamily: t.fonts.sans.extrabold, fontSize: 22, color: fg }}>
         {card.title}
       </Text>
       <Text
         style={{
           fontFamily: t.fonts.sans.regular,
-          fontSize: 13.5,
-          lineHeight: 21,
+          fontSize: 16,
+          lineHeight: 28,
           color: fg,
           opacity: 0.65,
         }}>
@@ -218,14 +205,17 @@ function WriteCard({ card }: { card: CaseCard }) {
           }}>
           {card.site}
         </Text>
-        <LinkLabel text="Read ↗" color={isCase ? t.colors.mustard : t.colors.brick} />
+        <LinkLabel
+          text={card.kind === 'blog' ? 'View blogs ↗' : 'View case studies ↗'}
+          color={isCase ? t.colors.mustard : t.colors.brick}
+        />
       </View>
     </View>
   );
-}
+});
 
 /* ── Creative placeholder card ── */
-function CreativeCard({ card }: { card: CaseCard }) {
+const CreativeCard = React.memo(function CreativeCard({ card }: { card: CaseCard }) {
   const t = useTheme();
   return (
     <DashedBorder
@@ -257,10 +247,10 @@ function CreativeCard({ card }: { card: CaseCard }) {
       </View>
     </DashedBorder>
   );
-}
+});
 
 /* ── AI / code card ── */
-function AiCard({ card }: { card: CaseCard }) {
+const AiCard = React.memo(function AiCard({ card }: { card: CaseCard }) {
   const t = useTheme();
   return (
     <View
@@ -286,16 +276,26 @@ function AiCard({ card }: { card: CaseCard }) {
           <Icon name={card.icon} size={22} color={t.colors.mustard} />
         </View>
       )}
-      <Text
-        style={{
+      {(() => {
+        const baseStyle = {
           fontFamily: t.fonts.mono,
           fontSize: 9,
           letterSpacing: 1.2,
-          textTransform: 'uppercase',
-          color: t.colors.mustard,
-        }}>
-        {card.category}
-      </Text>
+          textTransform: 'uppercase' as const,
+        };
+        const parts = card.category?.split(' · ') ?? [];
+        if (parts.length === 2) {
+          const statusColor = card.status === 'live' ? '#7ecf8e' : t.colors.mustard;
+          return (
+            <Text style={{ ...baseStyle, color: t.colors.mustard }}>
+              {parts[0]}
+              <Text style={{ color: t.colors.mustard }}> · </Text>
+              <Text style={{ color: statusColor }}>{parts[1]}</Text>
+            </Text>
+          );
+        }
+        return <Text style={{ ...baseStyle, color: t.colors.mustard }}>{card.category}</Text>;
+      })()}
       <Text style={{ fontFamily: t.fonts.sans.extrabold, fontSize: 20, color: t.colors.cream }}>
         {card.title}
       </Text>
@@ -342,14 +342,14 @@ function AiCard({ card }: { card: CaseCard }) {
             </View>
           ))}
         </View>
-        <LinkLabel text="View ↗" color={t.colors.mustard} />
+        {card.href && card.href !== '#' && <LinkLabel text="View ↗" color={t.colors.mustard} />}
       </View>
     </View>
   );
-}
+});
 
 /** Renders a CaseCard according to its kind, wrapped in the shared hover lift. */
-export function CaseCardView({ card }: { card: CaseCard }) {
+export const CaseCardView = React.memo(function CaseCardView({ card }: { card: CaseCard }) {
   const t = useTheme();
   let inner: ReactNode = null;
   switch (card.kind) {
@@ -395,10 +395,10 @@ export function CaseCardView({ card }: { card: CaseCard }) {
       {inner}
     </HoverCard>
   );
-}
+});
 
 /** The "How I run a campaign" process card in the Email tab. */
-export function ProcessCard({ process }: { process: ProcessBlock }) {
+export const ProcessCard = React.memo(function ProcessCard({ process }: { process: ProcessBlock }) {
   const t = useTheme();
   return (
     <View style={{ backgroundColor: t.colors.ink, borderRadius: t.radii.lg, padding: 36 }}>
@@ -472,4 +472,4 @@ export function ProcessCard({ process }: { process: ProcessBlock }) {
       </View>
     </View>
   );
-}
+});

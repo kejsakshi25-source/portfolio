@@ -56,7 +56,11 @@ export function BlobBackground() {
   const t = useTheme();
 
   return (
-    <Animated.View style={StyleSheet.absoluteFill} pointerEvents="none">
+    <Animated.View
+      style={StyleSheet.absoluteFill}
+      pointerEvents="none"
+      shouldRasterizeIOS
+      renderToHardwareTextureAndroid>
       <FloatingBlob
         position={{ top: -100, left: -100 }}
         duration={18000}
@@ -65,14 +69,14 @@ export function BlobBackground() {
       </FloatingBlob>
       <FloatingBlob
         position={{ top: '30%', right: -100 }}
-        duration={18000}
-        drift={{ x: 60, y: -40 }}>
+        duration={22000}
+        drift={{ x: -50, y: 60 }}>
         <Blob color={t.colors.mustard} size={420} />
       </FloatingBlob>
       <FloatingBlob
         position={{ bottom: -100, left: '30%' }}
-        duration={18000}
-        drift={{ x: 60, y: -40 }}>
+        duration={26000}
+        drift={{ x: 40, y: 50 }}>
         <Blob color={t.colors.rust} size={380} />
       </FloatingBlob>
     </Animated.View>

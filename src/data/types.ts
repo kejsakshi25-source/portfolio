@@ -202,6 +202,7 @@ export interface CaseCard {
   media?: MediaRef;
   href?: string;
   placeholder?: boolean; // a deliberate empty slot in the source
+  status?: 'live' | 'wip';
 }
 
 export interface ProcessStep {

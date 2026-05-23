@@ -1,4 +1,5 @@
 import { router } from 'expo-router';
+import React from 'react';
 import { Text, View } from 'react-native';
 
 import { DashedBorder } from '@/src/components/decor/DashedBorder';
@@ -12,7 +13,7 @@ import { useResponsiveValue } from '@/src/hooks/useResponsiveValue';
 import { useTheme } from '@/src/theme/ThemeProvider';
 
 /** A project on the landing "Work" section — navigates to its case study. */
-export function ProjectCard({ data }: { data: WorkCard }) {
+export const ProjectCard = React.memo(function ProjectCard({ data }: { data: WorkCard }) {
   const t = useTheme();
   const bp = useBreakpoint();
   const isRow = bp === 'desktop' || bp === 'wide';
@@ -177,4 +178,4 @@ export function ProjectCard({ data }: { data: WorkCard }) {
       {ordered}
     </HoverCard>
   );
-}
+});

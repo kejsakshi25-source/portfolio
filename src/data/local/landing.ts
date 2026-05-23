@@ -156,7 +156,7 @@ export const landing: LandingContent = {
         description:
           "I run the marketing stack at Xpert — the founder's LinkedIn end-to-end, 8+ website pages, 30+ case studies, 15+ B2B email campaigns, 10+ SEO blogs on WordPress, and 5+ custom Claude AI Skills that cut turnaround by ~50%.",
         image: { kind: 'local', module: images.logos.xpert, alt: 'Xpert' },
-        stat: { value: '238%', label: 'YoY growth · 60L+ reach' },
+        stat: { value: '60L+', label: 'Impressions · Zero ad spend' },
         variant: 'cream',
         order: 1,
       },

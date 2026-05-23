@@ -1,3 +1,4 @@
+import React from 'react';
 import { Text, View } from 'react-native';
 
 import { RemoteImage } from '@/src/components/media/RemoteImage';
@@ -6,7 +7,7 @@ import type { InvolvementCard as InvolvementCardData } from '@/src/data/types';
 import { useTheme } from '@/src/theme/ThemeProvider';
 
 /** A pinned "note" card in the Involvement section. */
-export function InvolvementCard({ data, index }: { data: InvolvementCardData; index: number }) {
+export const InvolvementCard = React.memo(function InvolvementCard({ data, index }: { data: InvolvementCardData; index: number }) {
   const t = useTheme();
 
   // Source: 1st cream, 2nd mustard, 3rd brick; alternating tilt.
@@ -62,4 +63,4 @@ export function InvolvementCard({ data, index }: { data: InvolvementCardData; in
       <RemoteImage media={data.image} style={{ width: '100%', aspectRatio: 1, borderRadius: 10, marginTop: 14 }} />
     </HoverCard>
   );
-}
+});

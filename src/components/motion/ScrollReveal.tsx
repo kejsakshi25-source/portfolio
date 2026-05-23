@@ -1,5 +1,5 @@
 import { type ReactNode, useEffect } from 'react';
-import { type StyleProp, useWindowDimensions, type ViewStyle } from 'react-native';
+import { Dimensions, type StyleProp, type ViewStyle } from 'react-native';
 import Animated, {
   measure,
   runOnUI,
@@ -13,6 +13,8 @@ import Animated, {
 } from 'react-native-reanimated';
 
 import { useScrollY } from './ScrollProvider';
+
+const WINDOW_HEIGHT = Dimensions.get('window').height;
 
 interface ScrollRevealProps {
   children: ReactNode;
@@ -35,13 +37,15 @@ export function ScrollReveal({ children, index = 0, distance = 44, style }: Scro
   const scrollY = useScrollY();
   const ref = useAnimatedRef<Animated.View>();
   const progress = useSharedValue(0);
-  const { height } = useWindowDimensions();
+  const revealed = useSharedValue(0);
 
   const reveal = () => {
     'worklet';
+    if (revealed.value === 1) return;
     if (progress.value > 0) return;
     const m = measure(ref);
-    if (m !== null && m.pageY < height * 0.92) {
+    if (m !== null && m.pageY < WINDOW_HEIGHT * 0.92) {
+      revealed.value = 1;
       progress.value = withDelay(
         index * 65,
         withSpring(1, { damping: 15, stiffness: 120, mass: 0.85 }),

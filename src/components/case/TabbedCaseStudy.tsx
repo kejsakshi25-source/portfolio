@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Text, View } from 'react-native';
 import Animated, { FadeIn } from 'react-native-reanimated';
 
@@ -48,7 +48,7 @@ function EmailLayout({ process, samples }: { process: ProcessBlock; samples: Cas
 }
 
 /** The content panel for the active tab — fades in on tab change. */
-function TabPanel({ tab }: { tab: CaseTab }) {
+const TabPanel = React.memo(function TabPanel({ tab }: { tab: CaseTab }) {
   const t = useTheme();
   return (
     <Animated.View key={tab.id} entering={FadeIn.duration(280)}>
@@ -68,7 +68,12 @@ function TabPanel({ tab }: { tab: CaseTab }) {
         {tab.process ? (
           <EmailLayout process={tab.process} samples={tab.items} />
         ) : (
-          <ResponsiveGrid columns={{ mobile: 1, tablet: 2, desktop: 3 }}>
+          <ResponsiveGrid
+            columns={
+              tab.id === 'writing'
+                ? { mobile: 1, tablet: 2, desktop: 2 }
+                : { mobile: 1, tablet: 2, desktop: 3 }
+            }>
             {tab.items.map((item, i) => (
               <ScrollReveal key={item.id} index={i % 3}>
                 <CaseCardView card={item} />
@@ -79,7 +84,7 @@ function TabPanel({ tab }: { tab: CaseTab }) {
       </Section>
     </Animated.View>
   );
-}
+});
 
 /**
  * The `tabbed` case-study layout (Xpert): hero + work intro + a sticky tab
@@ -89,6 +94,19 @@ export function TabbedCaseStudy({ study }: { study: TabbedCaseStudyData }) {
   const t = useTheme();
   const [activeId, setActiveId] = useState(study.tabs[0].id);
   const activeTab = study.tabs.find((tab) => tab.id === activeId) ?? study.tabs[0];
+
+  const skillsData = useMemo(
+    () =>
+      study.skillsIntro
+        ? {
+            kind: 'skills' as const,
+            label: study.skillsIntro.label,
+            heading: study.skillsIntro.heading,
+            items: study.skillsIntro.items,
+          }
+        : null,
+    [study.skillsIntro],
+  );
 
   return (
     <ScrollProvider>
@@ -104,16 +122,8 @@ export function TabbedCaseStudy({ study }: { study: TabbedCaseStudyData }) {
           />
           {/* divider after the hero — source `<hr margin-top:80px>` */}
           <CaseDivider topGap={80} />
-          {study.skillsIntro && (
-            <SkillsGrid
-              data={{
-                kind: 'skills',
-                label: study.skillsIntro.label,
-                heading: study.skillsIntro.heading,
-                items: study.skillsIntro.items,
-              }}
-              tools={study.skillsIntro.tools}
-            />
+          {skillsData && study.skillsIntro && (
+            <SkillsGrid data={skillsData} tools={study.skillsIntro.tools} />
           )}
           <Section
             num={study.workIntro.label}

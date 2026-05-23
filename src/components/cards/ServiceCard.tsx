@@ -1,3 +1,4 @@
+import React from 'react';
 import { View } from 'react-native';
 import Animated, {
   interpolateColor,
@@ -17,7 +18,7 @@ const SPRING = { damping: 16, stiffness: 210, mass: 0.7 };
  * col 1 → mustard, col 2 → ink, col 3 → brick — with a directional
  * lift/tilt, and the text inverts to cream on the two dark columns.
  */
-export function ServiceCard({ data, index }: { data: ServiceCardData; index: number }) {
+export const ServiceCard = React.memo(function ServiceCard({ data, index }: { data: ServiceCardData; index: number }) {
   const t = useTheme();
   const col = index % 3;
   const h = useSharedValue(0);
@@ -117,4 +118,4 @@ export function ServiceCard({ data, index }: { data: ServiceCardData; index: num
       </View>
     </Animated.View>
   );
-}
+});

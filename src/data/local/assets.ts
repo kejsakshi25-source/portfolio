@@ -27,6 +27,12 @@ export const images = {
     require('../../../assets/images/riwayat/4.png'),
   ],
 
+  xpertLinkedin: [
+    require('../../../assets/images/xpert-linkedin/1.png'),
+    require('../../../assets/images/xpert-linkedin/2.png'),
+    require('../../../assets/images/xpert-linkedin/3.png'),
+  ],
+
   sos: {
     comingSoon: require('../../../assets/images/sos/coming-soon.png'),
     deskToDinner: require('../../../assets/images/sos/desk-to-dinner.png'),

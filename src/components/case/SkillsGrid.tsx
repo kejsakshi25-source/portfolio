@@ -1,3 +1,4 @@
+import React, { useMemo } from 'react';
 import { Text, View } from 'react-native';
 import Animated, { useAnimatedStyle } from 'react-native-reanimated';
 
@@ -11,7 +12,7 @@ import type { Theme } from '@/src/theme/ThemeProvider';
 import { useTheme } from '@/src/theme/ThemeProvider';
 
 /** "Tools used" pill row — the dark strip below the skill cards. */
-function ToolsRow({ tools }: { tools: string[] }) {
+const ToolsRow = React.memo(function ToolsRow({ tools }: { tools: string[] }) {
   const t = useTheme();
   return (
     <View
@@ -63,7 +64,7 @@ function ToolsRow({ tools }: { tools: string[] }) {
       ))}
     </View>
   );
-}
+});
 
 interface SkillPalette {
   bg: string;
@@ -84,7 +85,7 @@ function skillPalette(t: Theme): SkillPalette[] {
 }
 
 /** Icon tile (52×52) — kicks (rotates + scales) when the parent card is hovered. */
-function SkillIcon({ skill, palette }: { skill: SkillCardData; palette: SkillPalette }) {
+const SkillIcon = React.memo(function SkillIcon({ skill, palette }: { skill: SkillCardData; palette: SkillPalette }) {
   const hover = useHoverProgress();
   const style = useAnimatedStyle(() => {
     const h = hover?.value ?? 0;
@@ -108,11 +109,11 @@ function SkillIcon({ skill, palette }: { skill: SkillCardData; palette: SkillPal
       <Icon name={skill.icon} size={26} color={palette.iconColor} />
     </Animated.View>
   );
-}
+});
 
-function SkillCard({ skill, index }: { skill: SkillCardData; index: number }) {
+const SkillCard = React.memo(function SkillCard({ skill, index }: { skill: SkillCardData; index: number }) {
   const t = useTheme();
-  const palette = skillPalette(t)[index % 5];
+  const palette = useMemo(() => skillPalette(t)[index % 5], [t, index]);
 
   return (
     <HoverCard
@@ -158,10 +159,10 @@ function SkillCard({ skill, index }: { skill: SkillCardData; index: number }) {
       </Text>
     </HoverCard>
   );
-}
+});
 
 /** "What I brought to the table" — skills section block. */
-export function SkillsGrid({ data, tools }: { data: SkillsSection; tools?: string[] }) {
+export const SkillsGrid = React.memo(function SkillsGrid({ data, tools }: { data: SkillsSection; tools?: string[] }) {
   // Source `.skill-cards{display:flex}` `.skill-card{flex:1}` — every card
   // shares one row regardless of count (3, 4, or 5). Desktop matches that;
   // phones/tablets still wrap.
@@ -177,4 +178,4 @@ export function SkillsGrid({ data, tools }: { data: SkillsSection; tools?: strin
       {tools && <ToolsRow tools={tools} />}
     </Section>
   );
-}
+});
