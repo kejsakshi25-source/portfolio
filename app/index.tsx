@@ -62,7 +62,7 @@ export default function LandingScreen() {
   // is null) so the document <title> always lands in the exported HTML.
   const head = (
     <Head>
-      <title>Sakshi Kejriwal — sakshi.k / Soft Internet</title>
+      <title>Sakshi Kejriwal — Portfolio</title>
     </Head>
   );
 
