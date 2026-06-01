@@ -89,11 +89,19 @@ export function NavBar({ items }: { items: NavItemConfig[] }) {
   const scrollY = useScrollY();
   const translateY = useSharedValue(0);
   const lastY = useSharedValue(0);
+  // Browsers restore scroll on refresh — the first reaction would otherwise
+  // see a jump from 0 to the restored Y and interpret it as scroll-down,
+  // hiding the navbar. Seed lastY on the first call so that's a no-op.
+  const ready = useSharedValue(false);
 
   useAnimatedReaction(
     () => scrollY.value,
-    (y, prev) => {
-      if (prev === null) return;
+    (y) => {
+      if (!ready.value) {
+        ready.value = true;
+        lastY.value = y;
+        return;
+      }
       if (y < 80) translateY.value = withTiming(0, { duration: 350 });
       else if (y > lastY.value + 6) translateY.value = withTiming(-180, { duration: 350 });
       else if (y < lastY.value - 6) translateY.value = withTiming(0, { duration: 350 });

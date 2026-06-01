@@ -38,13 +38,28 @@ export function ScrollReveal({ children, index = 0, distance = 44, style }: Scro
   const ref = useAnimatedRef<Animated.View>();
   const progress = useSharedValue(0);
   const revealed = useSharedValue(0);
+  // Tracks whether the FIRST reveal call has happened yet. If the element is
+  // already in viewport on first measure (initial paint / page refresh), we
+  // snap to visible with no animation — matching the source's IntersectionObserver
+  // which only animates elements that *enter* the viewport, not ones already there.
+  const firstMeasure = useSharedValue(true);
 
   const reveal = () => {
     'worklet';
     if (revealed.value === 1) return;
     if (progress.value > 0) return;
     const m = measure(ref);
-    if (m !== null && m.pageY < WINDOW_HEIGHT * 0.92) {
+    if (m === null) return;
+    const inView = m.pageY < WINDOW_HEIGHT * 0.92;
+    if (firstMeasure.value) {
+      firstMeasure.value = false;
+      if (inView) {
+        revealed.value = 1;
+        progress.value = 1;
+      }
+      return;
+    }
+    if (inView) {
       revealed.value = 1;
       progress.value = withDelay(
         index * 65,
