@@ -41,12 +41,11 @@ export const landing: LandingContent = {
 
   manifesto: {
     headline: [
-      { text: 'Things ' },
+      { text: 'Work ' },
       { text: 'people', style: 'squig' },
-      { text: '\n' },
+      { text: '\nactually ' },
       { text: 'stop', style: 'pop' },
-      { text: ' scrolling for,\n' },
-      { text: 'written and ' },
+      { text: ' scrolling for,\nwritten and ' },
       { text: 'designed', style: 'blob' },
       { text: '\nby me.' },
     ],
@@ -71,11 +70,13 @@ export const landing: LandingContent = {
         { text: 'Instagram content', style: 'highlight' },
         { text: ', ' },
         { text: 'copy', style: 'highlight' },
+        { text: ', and ' },
+        { text: 'email campaigns', style: 'highlight' },
         {
-          text: ', and email campaigns — and somewhere along the way started building AI automations to make it all run faster.',
+          text: ' — and somewhere along the way started building AI automations to make it all run faster.',
         },
       ],
-      "Kolkata born, always curious, and cannot help making things look and sound nicer than they have to. Studied at St. Xavier's, got very into club work, and found my way into digital marketing in the middle of all of it. Looking back, it makes complete sense — it's the one place where being creative and being analytical feel like the same thing.",
+      "Kolkata born, always curious, and cannot help making things look and sound nicer than they have to. Studied at St. Xavier's, got very into club work, and found my way into digital marketing in the middle of all of it. Looking back, it makes complete sense — there was never really going to be another answer.",
     ],
     pullQuote:
       '"I cannot help making things look and sound a little nicer than they technically need to."',
