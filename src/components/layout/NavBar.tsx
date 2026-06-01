@@ -1,4 +1,5 @@
 import { BlurView } from 'expo-blur';
+import { useEffect } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Animated, {
@@ -89,16 +90,23 @@ export function NavBar({ items }: { items: NavItemConfig[] }) {
   const scrollY = useScrollY();
   const translateY = useSharedValue(0);
   const lastY = useSharedValue(0);
-  // Browsers restore scroll on refresh — the first reaction would otherwise
-  // see a jump from 0 to the restored Y and interpret it as scroll-down,
-  // hiding the navbar. Seed lastY on the first call so that's a no-op.
+  // Browsers restore scroll on refresh — that comes through as a single big
+  // jump in scrollY shortly after mount. If we react to it as scroll-down the
+  // navbar hides on every refresh. Suppress the hide/show logic for ~600ms
+  // after mount and just keep lastY synced, so the first real scroll afterwards
+  // isn't seen as a jump.
   const ready = useSharedValue(false);
+  useEffect(() => {
+    const id = setTimeout(() => {
+      ready.value = true;
+    }, 600);
+    return () => clearTimeout(id);
+  }, [ready]);
 
   useAnimatedReaction(
     () => scrollY.value,
     (y) => {
       if (!ready.value) {
-        ready.value = true;
         lastY.value = y;
         return;
       }
