@@ -1,6 +1,15 @@
 import { useId } from 'react';
 import { Image, type ImageContentFit, type ImageSource } from 'expo-image';
-import { Platform, type ImageStyle, StyleSheet, type StyleProp, Text, View, type ViewStyle } from 'react-native';
+import {
+  Image as RNImage,
+  Platform,
+  type ImageStyle,
+  StyleSheet,
+  type StyleProp,
+  Text,
+  View,
+  type ViewStyle,
+} from 'react-native';
 import Svg, { Defs, Pattern, Rect } from 'react-native-svg';
 
 import { Icon } from '@/src/components/decor/Icon';
@@ -23,7 +32,9 @@ interface RemoteImageProps {
 }
 
 /** Build the expo-image `source` argument from a local-or-remote MediaRef.
- *  Web: an array of variants (responsive). Native: the original module/uri. */
+ *  Web: an array of `{uri,width}` for responsive picking (`v.src` is a Metro
+ *  asset id — resolve it through `Image.resolveAssetSource` to get the real
+ *  hashed URL). Native: the original module/uri unchanged. */
 function buildSource(media: Extract<MediaRef, { kind: 'local' | 'remote' }>):
   | number
   | ImageSource
@@ -32,12 +43,15 @@ function buildSource(media: Extract<MediaRef, { kind: 'local' | 'remote' }>):
   if (Platform.OS !== 'web' || !media.variants || media.variants.length === 0) {
     return original as number | ImageSource;
   }
-  // Sorted ascending by width — expo-image picks the smallest variant ≥ the
-  // rendered width, falling back to the largest available.
-  return media.variants
-    .slice()
-    .sort((a, b) => a.w - b.w)
-    .map((v) => ({ uri: v.src as unknown as string, width: v.w }) as ImageSource);
+  try {
+    const sources = media.variants
+      .slice()
+      .sort((a, b) => a.w - b.w)
+      .map<ImageSource>((v) => ({ uri: RNImage.resolveAssetSource(v.src).uri, width: v.w }));
+    return sources.length > 0 ? sources : (original as number | ImageSource);
+  } catch {
+    return original as number | ImageSource;
+  }
 }
 
 /**
