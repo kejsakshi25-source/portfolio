@@ -6,10 +6,7 @@ import {
   BricolageGrotesque_700Bold,
   BricolageGrotesque_800ExtraBold,
 } from '@expo-google-fonts/bricolage-grotesque';
-import {
-  InstrumentSerif_400Regular,
-  InstrumentSerif_400Regular_Italic,
-} from '@expo-google-fonts/instrument-serif';
+import { InstrumentSerif_400Regular_Italic } from '@expo-google-fonts/instrument-serif';
 import { Lora_400Regular_Italic } from '@expo-google-fonts/lora';
 import { PTMono_400Regular } from '@expo-google-fonts/pt-mono';
 import {
@@ -56,7 +53,6 @@ export default function RootLayout() {
     BricolageGrotesque_600SemiBold,
     BricolageGrotesque_700Bold,
     BricolageGrotesque_800ExtraBold,
-    InstrumentSerif_400Regular,
     InstrumentSerif_400Regular_Italic,
     Anton_400Regular,
     PTMono_400Regular,

@@ -1,10 +1,11 @@
 import { useId } from 'react';
-import { Image, type ImageContentFit } from 'expo-image';
-import { type ImageStyle, StyleSheet, type StyleProp, Text, View, type ViewStyle } from 'react-native';
+import { Image, type ImageContentFit, type ImageSource } from 'expo-image';
+import { Platform, type ImageStyle, StyleSheet, type StyleProp, Text, View, type ViewStyle } from 'react-native';
 import Svg, { Defs, Pattern, Rect } from 'react-native-svg';
 
 import { Icon } from '@/src/components/decor/Icon';
-import type { MediaRef } from '@/src/data/types';
+import { LazyMount } from '@/src/components/media/LazyMount';
+import type { MediaPriority, MediaRef } from '@/src/data/types';
 import { useTheme } from '@/src/theme/ThemeProvider';
 
 interface RemoteImageProps {
@@ -13,9 +14,30 @@ interface RemoteImageProps {
   contentFit?: ImageContentFit;
   /** Optional line icon shown inside a `placeholder` slot, above the label. */
   placeholderIcon?: string;
+  /** Caller-side override for priority — wins over `media.priority`. Used
+   *  by the lightbox to load slides immediately. */
+  priority?: MediaPriority;
   /** Fires when an actual image starts / finishes loading (image kinds only). */
   onLoadStart?: () => void;
   onLoad?: () => void;
+}
+
+/** Build the expo-image `source` argument from a local-or-remote MediaRef.
+ *  Web: an array of variants (responsive). Native: the original module/uri. */
+function buildSource(media: Extract<MediaRef, { kind: 'local' | 'remote' }>):
+  | number
+  | ImageSource
+  | ImageSource[] {
+  const original = media.kind === 'local' ? media.module : { uri: media.url };
+  if (Platform.OS !== 'web' || !media.variants || media.variants.length === 0) {
+    return original as number | ImageSource;
+  }
+  // Sorted ascending by width — expo-image picks the smallest variant ≥ the
+  // rendered width, falling back to the largest available.
+  return media.variants
+    .slice()
+    .sort((a, b) => a.w - b.w)
+    .map((v) => ({ uri: v.src as unknown as string, width: v.w }) as ImageSource);
 }
 
 /**
@@ -23,14 +45,16 @@ interface RemoteImageProps {
  * `placeholder` renders the source's "Drop screenshot"-style empty slot,
  * filled with the source's diagonal-hatch pinstripe texture (and, when given,
  * a centered line icon — the source's empty-card glyphs).
- * The single resolver for every image in the app — when the backend lands,
- * `remote` refs flow through here unchanged.
+ *
+ * On web, accepts responsive WebP variants via `media.variants` and
+ * IntersectionObserver-lazy-mounts unless `media.priority === 'high'`.
  */
 export function RemoteImage({
   media,
   style,
   contentFit = 'cover',
   placeholderIcon,
+  priority: priorityOverride,
   onLoadStart,
   onLoad,
 }: RemoteImageProps) {
@@ -89,17 +113,27 @@ export function RemoteImage({
     );
   }
 
-  const source = media.kind === 'local' ? media.module : { uri: media.url };
+  const priority = priorityOverride ?? media.priority ?? 'normal';
+  const source = buildSource(media);
 
+  // The wrapper holds the layout box (size, margin, border, radius); the
+  // image fills it absolutely. This way the slot reserves space before the
+  // image mounts, and styles aren't double-applied via wrapper + image.
   return (
-    <Image
-      source={source}
-      style={style}
-      contentFit={contentFit}
-      alt={media.alt}
-      cachePolicy="memory-disk"
-      onLoadStart={onLoadStart}
-      onLoad={onLoad}
-    />
+    <LazyMount
+      disabled={priority === 'high'}
+      style={[{ overflow: 'hidden' }, style as StyleProp<ViewStyle>]}>
+      <Image
+        source={source}
+        style={StyleSheet.absoluteFill as StyleProp<ImageStyle>}
+        contentFit={contentFit}
+        alt={media.alt}
+        cachePolicy="memory-disk"
+        priority={priority}
+        responsivePolicy="static"
+        onLoadStart={onLoadStart}
+        onLoad={onLoad}
+      />
+    </LazyMount>
   );
 }

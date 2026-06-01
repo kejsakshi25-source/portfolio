@@ -9,11 +9,40 @@
 
 /* ───────────────────────── primitives ───────────────────────── */
 
+/** A responsive WebP variant pair for an image — used on web only. */
+export interface ImageVariant {
+  src: number; // require()'d webp module id
+  w: number; // intrinsic width
+}
+
+/** Loading priority hint forwarded to expo-image. `high` also disables
+ *  IntersectionObserver lazy-mounting (use for above-the-fold media). */
+export type MediaPriority = 'high' | 'normal' | 'low';
+
 /** An asset reference. `local` is bundled, `remote` is a URL (post-backend),
  *  `placeholder` is a deliberate empty slot ("Drop screenshot" in the source). */
 export type MediaRef =
-  | { kind: 'local'; module: number; alt?: string }
-  | { kind: 'remote'; url: string; alt?: string }
+  | {
+      kind: 'local';
+      module: number;
+      alt?: string;
+      /** Optional WebP variants for responsive web delivery. Native ignores these. */
+      variants?: ImageVariant[];
+      /** Intrinsic dimensions if known — helps the browser reserve space. */
+      width?: number;
+      height?: number;
+      /** Loading priority. `'high'` skips lazy-mount; defaults to `'normal'`. */
+      priority?: MediaPriority;
+    }
+  | {
+      kind: 'remote';
+      url: string;
+      alt?: string;
+      variants?: ImageVariant[];
+      width?: number;
+      height?: number;
+      priority?: MediaPriority;
+    }
   | { kind: 'placeholder'; label: string };
 
 /** Inline emphasis styles, ported from the source's decorative spans. */

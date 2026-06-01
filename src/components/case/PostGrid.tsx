@@ -1,4 +1,5 @@
 import { useVideoPlayer, VideoView } from 'expo-video';
+import { useState } from 'react';
 import { Platform, Text, View } from 'react-native';
 
 import { ResponsiveGrid } from '@/src/components/layout/ResponsiveGrid';
@@ -16,20 +17,36 @@ const BADGE: Record<PostItem['type'], string> = {
 };
 
 /**
- * Video thumbnail — shows the actual reel. On web it autoplays a muted hover
- * preview (and resets on leave), matching the source's `mouseenter` preview;
- * on native it shows the paused first frame under the play overlay.
+ * Video preview that does NOT mount until the user actually hovers (web) or
+ * opens the post (mount only happens via lightbox). Until then it shows the
+ * static cover (placeholder hatch tile or thumbnail) — so the 48 MB MP4 is
+ * never fetched on initial page load.
  */
-function VideoPostThumb({ video }: { video: MediaRef }) {
+function VideoPostThumb({ cover, video }: { cover: MediaRef; video: MediaRef }) {
+  const [armed, setArmed] = useState(false);
+
+  if (!armed) {
+    const arm = Platform.OS === 'web' ? { onPointerEnter: () => setArmed(true) } : {};
+    return (
+      <View style={{ width: '100%', height: '100%' }} {...arm}>
+        <RemoteImage media={cover} style={{ width: '100%', height: '100%' }} />
+      </View>
+    );
+  }
+  return <LiveVideoThumb video={video} />;
+}
+
+/** Only mounted once the user has expressed interest (hovered the card). */
+function LiveVideoThumb({ video }: { video: MediaRef }) {
   const player = useVideoPlayer(video.kind === 'local' ? video.module : null, (p) => {
     p.loop = true;
     p.muted = true;
+    p.play();
   });
 
   const hover =
     Platform.OS === 'web'
       ? {
-          onPointerEnter: () => player.play(),
           onPointerLeave: () => {
             player.pause();
             player.currentTime = 0;
@@ -105,7 +122,7 @@ function PostCard({ post, onPress }: { post: PostItem; onPress?: () => void }) {
         {/* square thumbnail — source `.post-thumb{aspect-ratio:1/1}` */}
         <View style={{ width: '100%', aspectRatio: 1 }}>
           {isVideo && post.video ? (
-            <VideoPostThumb video={post.video} />
+            <VideoPostThumb cover={post.cover} video={post.video} />
           ) : (
             <RemoteImage media={post.cover} style={{ width: '100%', height: '100%' }} />
           )}

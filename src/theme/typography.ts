@@ -19,7 +19,6 @@ export const fonts = {
     extrabold: 'BricolageGrotesque_800ExtraBold',
   },
   serif: {
-    regular: 'InstrumentSerif_400Regular',
     italic: 'InstrumentSerif_400Regular_Italic',
   },
   display: 'Anton_400Regular',

@@ -1,5 +1,16 @@
-import type { LandingContent } from '../types';
-import { images } from './assets';
+import type { LandingContent, MediaPriority, MediaRef } from '../types';
+import { type BundledImage, images } from './assets';
+
+/** Wrap a bundled image as a local MediaRef, carrying responsive variants. */
+const local = (img: BundledImage, alt?: string, priority?: MediaPriority): MediaRef => ({
+  kind: 'local',
+  module: img.module,
+  variants: img.variants,
+  width: img.width,
+  height: img.height,
+  alt,
+  priority,
+});
 
 /**
  * Landing page content — transcribed verbatim from the source `index.html`.
@@ -9,7 +20,7 @@ import { images } from './assets';
 export const landing: LandingContent = {
   intro: {
     polaroid: {
-      image: { kind: 'local', module: images.personal, alt: 'Sakshi Kejriwal' },
+      image: local(images.personal, 'Sakshi Kejriwal', 'high'),
       caption: 'yours, sakshi ✶',
     },
     name: [
@@ -155,7 +166,7 @@ export const landing: LandingContent = {
         role: 'Digital marketing strategist',
         description:
           "I run the marketing stack at Xpert — the founder's LinkedIn end-to-end, 8+ website pages, 30+ case studies, 15+ B2B email campaigns, 10+ SEO blogs on WordPress, and 5+ custom Claude AI Skills that cut turnaround by ~50%.",
-        image: { kind: 'local', module: images.logos.xpert, alt: 'Xpert' },
+        image: local(images.logos.xpert, 'Xpert', 'high'),
         stat: { value: '60L+', label: 'Impressions · Zero ad spend' },
         variant: 'cream',
         order: 1,
@@ -167,7 +178,7 @@ export const landing: LandingContent = {
         role: 'Social media marketing',
         description:
           'A slow-fashion, hand-embroidery brand in its pre-launch phase. I built the Instagram visual identity from scratch — 10+ feed posts, ideation, layout, caption writing, and final creatives in Canva.',
-        image: { kind: 'local', module: images.logos.storyOfStrings, alt: 'Story of Strings' },
+        image: local(images.logos.storyOfStrings, 'Story of Strings'),
         stat: { value: '10+', label: 'pre-launch posts' },
         variant: 'dark',
         reversed: true,
@@ -180,7 +191,7 @@ export const landing: LandingContent = {
         role: 'Social media strategist',
         description:
           'Five clients in parallel. Post ideation, content creation, content calendars, influencer outreach, Canva graphics, and hands-on Shopify setup and management. A lot happening — and I loved the chaos.',
-        image: { kind: 'local', module: images.logos.envisionX, alt: 'Envision X' },
+        image: local(images.logos.envisionX, 'Envision X'),
         stat: { value: '05', label: 'brands, parallel' },
         variant: 'cream',
         order: 3,
@@ -192,7 +203,7 @@ export const landing: LandingContent = {
         role: 'Social media marketing',
         description:
           'Where it all started. Led content ideation and execution across social platforms, plus product promotion strategies for everyday content and special campaigns. First brief, first lessons.',
-        image: { kind: 'local', module: images.logos.hobiz, alt: 'Hobiz' },
+        image: local(images.logos.hobiz, 'Hobiz'),
         variant: 'dark',
         order: 4,
       },
@@ -210,11 +221,7 @@ export const landing: LandingContent = {
     description:
       'My sister and I sold home-baked goods during Diwali. I, naturally, turned it into a full brand — logo, menu, packaging, thank-you cards. Was it necessary? No. Did I love every second? Yes.',
     tags: ['Brand identity', 'Logo design', 'Packaging', 'Menu design'],
-    images: images.riwayat.map((module, i) => ({
-      kind: 'local' as const,
-      module,
-      alt: `Riwayat ${i + 1}`,
-    })),
+    images: images.riwayat.map((img, i) => local(img, `Riwayat ${i + 1}`)),
   },
 
   involvement: {
@@ -228,21 +235,21 @@ export const landing: LandingContent = {
         id: 'xcc',
         title: "Xavier's Consulting Club",
         body: 'Marketing, design, social media, a full casebook, and a live-project investor pitch deck. XCC is where I learned that doing everything is actually kind of my thing.',
-        image: { kind: 'local', module: images.involvement.xcc, alt: "Xavier's Consulting Club" },
+        image: local(images.involvement.xcc, "Xavier's Consulting Club"),
         order: 1,
       },
       {
         id: 'girlup',
         title: 'GirlUp Nirbhaya',
         body: 'Graphics Head and Social Media Manager for a cause I actually believed in. Made sure the work looked as good as the message.',
-        image: { kind: 'local', module: images.involvement.girlup, alt: 'GirlUp Nirbhaya' },
+        image: local(images.involvement.girlup, 'GirlUp Nirbhaya'),
         order: 2,
       },
       {
         id: 'leo-club',
         title: 'Leo Club · Midtown Glory',
         body: 'Club member volunteer (2023–24). Helped on social media content and graphics, coordinated inter-club events, and volunteered to teach at an underprivileged school.',
-        image: { kind: 'local', module: images.involvement.leoClub, alt: 'Leo Club Midtown Glory' },
+        image: local(images.involvement.leoClub, 'Leo Club Midtown Glory'),
         order: 3,
       },
     ],

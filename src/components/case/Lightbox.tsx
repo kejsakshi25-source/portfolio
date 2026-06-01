@@ -111,6 +111,7 @@ export function Lightbox({ post, onClose }: { post: PostItem | null; onClose: ()
               <RemoteImage
                 media={slides[index]}
                 contentFit="contain"
+                priority="high"
                 style={{ width: '100%', height: '100%', borderRadius: 14 }}
                 onLoadStart={() => setLoaded(false)}
                 onLoad={() => setLoaded(true)}

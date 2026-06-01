@@ -1,8 +1,16 @@
-import type { CaseStudy, MediaRef } from '../types';
-import { images, video } from './assets';
+import type { CaseStudy, MediaPriority, MediaRef } from '../types';
+import { type BundledImage, images, video } from './assets';
 
-/** Wrap a bundled image module as a local MediaRef. */
-const local = (module: number, alt?: string): MediaRef => ({ kind: 'local', module, alt });
+/** Wrap a bundled image as a local MediaRef, carrying responsive variants. */
+const local = (img: BundledImage, alt?: string, priority?: MediaPriority): MediaRef => ({
+  kind: 'local',
+  module: img.module,
+  variants: img.variants,
+  width: img.width,
+  height: img.height,
+  alt,
+  priority,
+});
 
 /**
  * Case studies — transcribed verbatim from xpert.html, strings.html,
@@ -257,7 +265,7 @@ export const caseStudies: CaseStudy[] = [
             type: 'video',
             caption: "Things AI Can't Do",
             cover: { kind: 'placeholder', label: 'Reel' },
-            video: local(video.thingsAiCantDo, "Things AI Can't Do"),
+            video: { kind: 'local', module: video.thingsAiCantDo, alt: "Things AI Can't Do" },
           },
           {
             id: 'khaka-designs',
