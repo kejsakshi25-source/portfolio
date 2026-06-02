@@ -90,18 +90,19 @@ export function NavBar({ items }: { items: NavItemConfig[] }) {
   const scrollY = useScrollY();
   const translateY = useSharedValue(0);
   const lastY = useSharedValue(0);
-  // Browsers restore scroll on refresh — that comes through as a single big
-  // jump in scrollY shortly after mount. If we react to it as scroll-down the
-  // navbar hides on every refresh. Suppress the hide/show logic for ~600ms
-  // after mount and just keep lastY synced, so the first real scroll afterwards
-  // isn't seen as a jump.
+  // Browsers restore scroll on refresh — and RN-web's ScrollView can fire its
+  // first onScroll late (after fonts/images settle). If we react to that as
+  // scroll-down the navbar hides on every refresh. Suppress hide/show entirely
+  // for the first 2s, keep lastY synced, and resync explicitly when the window
+  // ends — so the first real scroll afterwards isn't seen as a jump.
   const ready = useSharedValue(false);
   useEffect(() => {
     const id = setTimeout(() => {
+      lastY.value = scrollY.value;
       ready.value = true;
-    }, 600);
+    }, 2000);
     return () => clearTimeout(id);
-  }, [ready]);
+  }, [ready, lastY, scrollY]);
 
   useAnimatedReaction(
     () => scrollY.value,
@@ -110,8 +111,17 @@ export function NavBar({ items }: { items: NavItemConfig[] }) {
         lastY.value = y;
         return;
       }
+      // Defensive: a huge jump while lastY is still near 0 is scroll-restoration
+      // arriving late, not user scrolling. Sync without acting.
+      if (Math.abs(y - lastY.value) > 80 && lastY.value < 10) {
+        lastY.value = y;
+        return;
+      }
       if (y < 80) translateY.value = withTiming(0, { duration: 350 });
-      else if (y > lastY.value + 6) translateY.value = withTiming(-180, { duration: 350 });
+      // Only hide once the user is meaningfully past the intro — avoids
+      // hiding due to small layout-shift-driven scroll deltas near the top.
+      else if (y > 200 && y > lastY.value + 6)
+        translateY.value = withTiming(-180, { duration: 350 });
       else if (y < lastY.value - 6) translateY.value = withTiming(0, { duration: 350 });
       lastY.value = y;
     },
